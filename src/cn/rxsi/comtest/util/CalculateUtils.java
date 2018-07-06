@@ -1,5 +1,6 @@
 package cn.rxsi.comtest.util;
 
+
 public class CalculateUtils {
 
 	private String data;
@@ -16,15 +17,15 @@ public class CalculateUtils {
 	public String GNM() {
 		datas = data.split("-");
 		// System.out.println(datas.length);
-		for (int i = 0; i < datas.length; i++) {
+		/*for (int i = 0; i < datas.length; i++) {
 			 System.out.println(datas[i]);
-		}
-		if(datas.length<4) {
+		}*/
+		if(!datas[0].equals("01111110")&&datas.length<4) {
 			return "数据结构出错";
 		}
 
 		gnm = datas[1];
-		System.out.println(gnm);
+		//System.out.println(gnm);
 		switch (gnm) {
 		case "02":
 			return GNM_02();
@@ -51,7 +52,16 @@ public class CalculateUtils {
 			return "10：写多个寄存器" + "\r\n" + "结构为：地址码(1B)+功能码(1B)+起始寄存器地址(2B)+寄存器个数(2B)+(数据个数)+(数据)";
 		}
 		
-		String aString = crcUtils.getCrc(data.substring(0, 17).getBytes());
+		String cString=data.substring(0,17);
+		
+		String [] aStrings=cString.split("-");
+		
+		String bString=aStrings[0];
+		for(int i=1;i<aStrings.length;i++) {
+			bString+=aStrings[i];
+		}
+		
+		String aString = crcUtils.getCrc(bString.getBytes());
 
 		return "Rx:" + data.substring(0, 17) + aString.substring(0, 2) + "-" + aString.substring(2, 4);
 	}
@@ -62,7 +72,7 @@ public class CalculateUtils {
 			return "03：读多个寄存器" + "\r\n" + "结构为：地址码(1B)+功能码(1B)+起始寄存器地址(2B)+寄存器个数(2B)";
 		} else {
 			String num = datas[5];
-			System.out.println(num);
+			//System.out.println(num);
 			String aString = num.substring(0, 1);
 			String bString = num.substring(1, 2);
 			String back = "-00";
@@ -79,7 +89,15 @@ public class CalculateUtils {
 			}
 			
 			String aString2 = "01-03-0" + Integer.toHexString(num2) + back;
-			String bString2 = crcUtils.getCrc(aString2.getBytes());
+			String []aStrings=aString2.split("-");
+			String string=aStrings[0];
+			for(int i=1;i<aStrings.length;i++) {
+				string+=aStrings[i];
+			}
+			//System.out.println("aaaaa+  "+string);
+			//String string2=string.toUpperCase();
+			//System.out.println("bbbbb "+string2);
+			String bString2 = crcUtils.getCrc(string.getBytes());
 
 			return "Rx:" + aString2 + "-" + bString2.substring(0, 2) + "-" + bString2.substring(2, 4);
 		}
@@ -92,7 +110,19 @@ public class CalculateUtils {
 			return "0f：写多个输出继电器的状态" + "\r\n" + "结构为：地址码(1B)+功能码(1B)+起始寄存器地址(2B)+寄存器个数(2B)+(数据)";
 		}
 
-		String aString = crcUtils.getCrc(data.substring(0, 17).getBytes());
+		String cString=data.substring(0,17);
+		//System.out.println(cString);
+		
+		String [] aStrings=cString.split("-");
+		
+		String bString=aStrings[0];
+		for(int i=1;i<aStrings.length;i++) {
+			bString+=aStrings[i];
+		}
+		//System.out.println(bString);
+		
+		String aString = crcUtils.getCrc(bString.getBytes());
+	//	String aString = crcUtils.getCrc(data.substring(0, 17).getBytes());
 		return "Rx:" + data.substring(0, 17) + "-" + aString.substring(0, 2) + "-" + aString.substring(2, 4);
 	}
 
@@ -102,11 +132,22 @@ public class CalculateUtils {
 			return "02：读取输入继电器的状态" + "\r\n" + "结构为：地址码(1B)+功能码(1B)+起始寄存器地址(2B)+寄存器个数(2B)";
 		} else {
 			String aString1 = datas[0];
-			String aString = aString1 + "-02-01-00";
+			String aString = aString1 + "-02-02-00-00";
+			
+			String []aStrings=aString.split("-");
+			String bString=aStrings[0];
+			
+			for(int i=1;i<aStrings.length;i++) {
+				bString+=aStrings[i];
+			}
+			
+			//System.out.println("cccc+  "+bString);
+			
+			//System.out.println("dddd+  "+bString.toUpperCase());
 
-			String bString = crcUtils.getCrc(aString.getBytes());
+			String cString = crcUtils.getCrc(bString.getBytes());
 
-			return "Rx:" + aString + "-" + bString.substring(0, 2) + "-" + bString.substring(2, 4);
+			return "Rx:" + aString + "-" + cString.substring(0, 2) + "-" + cString.substring(2, 4);
 
 		}
 

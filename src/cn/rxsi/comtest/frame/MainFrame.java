@@ -64,8 +64,8 @@ public class MainFrame extends JFrame {
 	private JComboBox mCommChoice = new JComboBox();
 	private JComboBox mBaudrateChoice = new JComboBox();
 	private ButtonGroup mDataChoice = new ButtonGroup();
-	private JRadioButton mDataASCIIChoice = new JRadioButton("ASCII", true);
-	private JRadioButton mDataHexChoice = new JRadioButton("Hex");
+	private JRadioButton mDataASCIIChoice = new JRadioButton("RTU", true);
+	private JRadioButton mDataHexChoice = new JRadioButton("ASCII");
 
 	private JPanel mOperatePanel = new JPanel();
 	private JTextArea mDataInput = new JTextArea();
@@ -278,20 +278,27 @@ public class MainFrame extends JFrame {
 							if (data.length < 2) {
 								mlight.setBackground(Color.RED);
 							} else {
-								mDataView.append("Tx:" + new String(data) + "\r\n");
-								// System.out.println(new String(data).length());
-								CalculateUtils calculateUtils = new CalculateUtils(new String(data));
-								// System.out.println(calculateUtils.GNM());
-								SerialPortManager.sendToPort(mSerialport, calculateUtils.GNM().getBytes());
+								if(!new String(data).equals("00")) {
+									System.out.println(data);
+									mDataView.append("Tx:" + new String(data) + "\r\n");
+									// System.out.println(new String(data).length());
+									CalculateUtils calculateUtils = new CalculateUtils(new String(data));
+									// System.out.println(calculateUtils.GNM());
+									SerialPortManager.sendToPort(mSerialport, calculateUtils.GNM().getBytes());
+								
+								}
 							}
 
 						}
 
 						if (mDataHexChoice.isSelected()) {
-							if(data.length<2) {
+							if(data.length<3) {
 								mlight.setBackground(Color.RED);
+								System.out.println(data.length);;
 							}
+							
 							else {
+								//System.out.println(data.length);
 								mDataView.append("Tx:" + ByteUtils.byteArrayToHexString(data) + "\r\n");
 								CalculateUtils calculateUtils=new CalculateUtils(ByteUtils.byteArrayToHexString(data));
 								SerialPortManager.sendToPort(mSerialport, calculateUtils.GNM().getBytes());
